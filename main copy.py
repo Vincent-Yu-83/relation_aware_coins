@@ -17,7 +17,7 @@ print(pd.__version__)
 #import seaborn
 #seaborn.set_context(context="talk")
 
-
+# 创建一个解析命令行参数对象
 parser = argparse.ArgumentParser(description='manual to this script')
 parser.add_argument('--total_step', type=int, default=80000)
 parser.add_argument('--x_window_size', type=int, default=31)
@@ -45,10 +45,10 @@ parser.add_argument('--model_name', type=str, default = None)
 parser.add_argument('--log_dir', type=str, default = None)
 parser.add_argument('--model_dir', type=str, default = None)
 
-
+# 参数解析对象
 FLAGS = parser.parse_args()
 
-
+# 初始化开始时间、结束时间
 start = utils.parse_time(FLAGS.start)
 end = utils.parse_time(FLAGS.end)
 

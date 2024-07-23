@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sqlite3
 import numpy as np
 import pandas as pd
@@ -101,7 +102,7 @@ class HistoryManager:
         """
         return self.get_global_panel(start, end, period, features).values
 
-    def get_global_panel(self, start, end, period=300, features=('close',)):
+    def get_global_panel(self, start, end, period=60, features=('close',)):
         """
         :param start/end: linux timestamp in seconds
         :param period: time interval of each data access point
@@ -120,14 +121,14 @@ class HistoryManager:
             raise ValueError("the length of selected coins %d is not equal to expected %d"
                              % (len(coins), self._coin_number))
 
-        print("feature type list is %s" % str(features))
+        print("feature type list is %s" % str(features)) 
         self.__checkperiod(period)
 
         time_index = pd.to_datetime(list(range(start, end+1, period)),unit='s')
         # print('time_index : ' + str(time_index))
         
-        # df = pd.DataFrame(features, columns=time_index, index=coins)
-        df = pd.DataFrame()
+        df = pd.DataFrame(features, columns=time_index, index=coins)
+        # df = pd.DataFrame()
         # print(df)
         # panel = pd.Panel(items=features, major_axis=coins, minor_axis=time_index, dtype=np.float32)
 
@@ -137,9 +138,9 @@ class HistoryManager:
                 for feature in features:
                     # NOTE: transform the start date to end date
                     if feature == "close":
-                        sql = ("SELECT date+300 AS date_norm, close FROM History WHERE"
-                               " date_norm>={start} and date_norm<={end}" 
-                               " and date_norm%{period}=0 and coin=\"{coin}\"".format(
+                        sql = ("SELECT datetime((date+300)  / 1000, 'unixepoch') AS date_norm, close FROM History WHERE"
+                               " date+300>={start} and date+300<={end}" 
+                               " and (date+300)%{period}=0 and coin=\"{coin}\"".format(
                                start=start * 1000, end=end * 1000, period=period, coin=coin))
                     elif feature == "open":
                         sql = ("SELECT date+{period} AS date_norm, open FROM History WHERE"
@@ -172,12 +173,14 @@ class HistoryManager:
                         print(msg)
                         raise ValueError(msg)
                     serial_data = pd.read_sql_query(sql, con=connection,
-                                                    parse_dates=["date_norm"],
+                                                    parse_dates=[0],
                                                     index_col="date_norm")
-                    # print('sql = ' + sql)
-                    # print(serial_data)
+                    print('sql = ' + sql)
+                    print(panel)
+                    print(serial_data.index)
                     df = df._append(serial_data.squeeze())
                     # panel.loc[feature, coin, serial_data.index] = serial_data.squeeze()
+                    # panel = panel_fillna(panel, "both")
                     # df = utils.panel_fillna(df, "both")
                     df = df.fillna(axis=1, method="bfill").fillna(axis=1, method="ffill")
         finally:
@@ -307,10 +310,11 @@ class DataMatrices:
             raise ValueError("market {} is not valid".format(market))
         self.__period_length = period
         # portfolio vector memory, [time, assets]
-        # print(self.__global_data)
-        # self.__PVM = pd.DataFrame(index=self.__global_data.minor_axis,columns=self.__global_data.major_axis)
-        self.__PVM = self.__global_data
+        self.__PVM = pd.DataFrame(index=self.__global_data.minor_axis,
+                                  columns=self.__global_data.major_axis)
         self.__PVM = self.__PVM.fillna(1.0 / self.__coin_no)
+        # self.__PVM = self.__global_data
+        # self.__PVM = self.__PVM.fillna(1.0 / self.__coin_no)
 
         self._window_size = window_size
         self._num_periods = len(self.__global_data.index)
