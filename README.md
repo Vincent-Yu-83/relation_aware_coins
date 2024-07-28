@@ -9,8 +9,8 @@ Relation Aware Coins项目是作者和作者团队开发的基于投资组合选
 <br/>
 
 ## Model
-<img width="200"  src="relation_aware_coins/image/model.png">
-<img width="200"  src="relation_aware_coins/image/self-attention.png">
+<img width="400"  src="image/model.png">
+<img width="800"  src="image/self-attention.png">
 
 
 <br/>
