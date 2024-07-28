@@ -9,22 +9,19 @@ Relation Aware Coins项目是作者和作者团队开发的基于投资组合选
 <br/>
 
 ## Model
-![Uploading image.png…]()
+<img width="200"  src="relation_aware_coins/image/model.png">
+<img width="200"  src="relation_aware_coins/image/self-attention.png">
 
-#### kaggle
 
 <br/>
 
 ## Getting Started
 ```bash
-$ git clone https://github.com/Vincent-Yu-83/kaggle_projects.git
-$ pip install jupyterlab
-$ pip install ipykernel
-$ pip install pytorch
+$ git clone https://github.com/Vincent-Yu-83/relation_aware_coins.git
 ```
 
 <br/>
 
 ## Dependencies
-* [Python 3.8](https://www.continuum.io/downloads)
+* [Python 3.9](https://www.continuum.io/downloads)
 * [PyTorch 2.2.2](http://pytorch.org/)
